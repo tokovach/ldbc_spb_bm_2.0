@@ -100,6 +100,7 @@ public class TestDriver {
 		warmupPeriodSeconds = configuration.getInt(Configuration.WARMUP_PERIOD_SECONDS);
 		benchmarkRunPeriodSeconds = configuration.getInt(Configuration.BENCHMARK_RUN_PERIOD_SECONDS);
 
+		EditorialAgent.bUseTrig = configuration.getBoolean(Configuration.USE_TRIG_INSERT);
 
 		queryExecuteManager = new SparqlQueryExecuteManager(inBenchmarkState,
 				configuration.getString(Configuration.ENDPOINT_URL),
@@ -119,9 +120,11 @@ public class TestDriver {
 	private RandomUtil initializeRandomUtil(String datasetsPath, long seed, int yearSeed, int generorPeriodYears) {
 		//File WordsDictionary.txt is one level up
 		String ontPath = FileUtils.normalizePath(datasetsPath);
-		String oneLevelUp = ontPath.substring(0, ontPath.lastIndexOf(File.separator) + 1);		
-		String filePath = oneLevelUp + "dictionaries" + File.separator + "WordsDictionary.txt";		
-		
+		new File(ontPath).getParent();
+		String oneLevelUp = new File(ontPath).getParent();
+		String filePath = new File(new File(oneLevelUp, "dictionaries") , "WordsDictionary.txt").getAbsolutePath();
+
+
 		return new RandomUtil(filePath, seed, yearSeed, generorPeriodYears);
 	}
 	
@@ -714,7 +717,7 @@ public class TestDriver {
 	 * @param enable 				 - enable the phase
 	 * @param benchmarkByQueryRuns   - if zero, then time interval set by parameter 'benchmarkRunPeriodSeconds' will be used for completing the phase.
 	 * 								   if greater than zero, then its value the amount of aggregate queries that will be executed for completing the phase.
-	 * @param mileStonePosition - defines after the position of execution of a 'mileStone' query ( the query that will verify that certain milestone has been reached). 
+	 * @param milestonePosition - defines after the position of execution of a 'mileStone' query ( the query that will verify that certain milestone has been reached).
 	 * 								   This parameter is considered only if benchmarkByQueryRuns > 0. 
 	 * 								   e.g. if mileStoneQueryPosition = 0.2 in terms of percents, then after 20% of executed queries a mileStone query is started.
 	 * @throws IOException

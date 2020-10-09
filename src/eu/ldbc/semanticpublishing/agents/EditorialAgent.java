@@ -17,6 +17,7 @@ import eu.ldbc.semanticpublishing.statistics.Statistics;
 import eu.ldbc.semanticpublishing.substitutionparameters.SubstitutionParametersGenerator;
 import eu.ldbc.semanticpublishing.templates.editorial.DeleteTemplate;
 import eu.ldbc.semanticpublishing.templates.editorial.InsertTemplate;
+import eu.ldbc.semanticpublishing.templates.editorial.InsertTrigTemplate;
 import eu.ldbc.semanticpublishing.templates.editorial.UpdateTemplate;
 import eu.ldbc.semanticpublishing.util.RandomUtil;
 import eu.ldbc.semanticpublishing.util.RdfUtils;
@@ -41,9 +42,11 @@ public class EditorialAgent extends AbstractAsynchronousAgent {
 	
 	private final static Logger DETAILED_LOGGER = LoggerFactory.getLogger(EditorialAgent.class.getName());
 	private final static Logger BRIEF_LOGGER = LoggerFactory.getLogger(TestDriver.class.getName());
-	
+
 	private final static long SLEEP_TIME_MS = 1000;
-	
+
+	public static boolean bUseTrig = "true".equals(System.getProperty("use.insert.trig", "false"));
+
 	public EditorialAgent(AtomicBoolean benchmarkingState, SparqlQueryExecuteManager queryExecuteManager, RandomUtil ru, AtomicBoolean runFlag, HashMap<String, String> queryTemplates, HashMap<String, String> validationQueryTemplates, Configuration configuration, Definitions definitions, AtomicBoolean maxUpdateOperationsReached) {
 		super(runFlag);
 		this.queryExecuteManager = queryExecuteManager;
@@ -80,7 +83,9 @@ public class EditorialAgent extends AbstractAsynchronousAgent {
 			
 			switch (queryDistribution) {
 				case 0 :
-					InsertTemplate insertQuery = new InsertTemplate("", ru, queryTemplates, definitions);
+					InsertTemplate insertQuery = (bUseTrig)
+													? new InsertTrigTemplate("", ru, queryTemplates, definitions)
+													: new InsertTemplate("", ru, queryTemplates, definitions);
 					
 					queryType = insertQuery.getTemplateQueryType();
 					queryName = insertQuery.getTemplateFileName();
@@ -164,7 +169,7 @@ public class EditorialAgent extends AbstractAsynchronousAgent {
 		
 		//report success
 		if (reportSuccess) {
-			if (queryType == QueryType.INSERT) {
+			if (queryType == QueryType.INSERT || queryType == QueryType.INSERT_TRIG) {
 				if (queryResult.length() >= 0 && benchmarkingState.get()) {
 					Statistics.insertCreativeWorksQueryStatistics.reportSuccess(queryExecutionTimeMs);
 				}				
@@ -182,7 +187,7 @@ public class EditorialAgent extends AbstractAsynchronousAgent {
 
 		//report failure			
 		} else {
-			if (queryType == QueryType.INSERT) {
+			if (queryType == QueryType.INSERT || queryType == QueryType.INSERT_TRIG) {
 				Statistics.insertCreativeWorksQueryStatistics.reportFailure();
 			} else if (queryType == QueryType.UPDATE) {
 				Statistics.updateCreativeWorksQueryStatistics.reportFailure();
