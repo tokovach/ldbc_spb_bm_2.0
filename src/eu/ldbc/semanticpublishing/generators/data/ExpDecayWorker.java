@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.openrdf.model.Model;
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.Rio;
+import org.eclipse.rdf4j.model.Model;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
+import org.eclipse.rdf4j.rio.Rio;
 
 import eu.ldbc.semanticpublishing.generators.data.sesamemodelbuilders.CreativeWorkBuilder;
 import eu.ldbc.semanticpublishing.refdataset.model.Entity;
@@ -99,7 +99,7 @@ public class ExpDecayWorker extends RandomWorker {
 						creativeWorkBuilder.setDateIncrement(startDate, (int)iterationStep);
 						creativeWorkBuilder.setAboutPresetUri(entity.getURI());
 						creativeWorkBuilder.setUsePresetData(true);
-						sesameModel = creativeWorkBuilder.buildSesameModel();												
+						sesameModel = creativeWorkBuilder.buildSesameModel(rdfFormat);
 					}
 					
 					Rio.write(sesameModel, os, rdfFormat);

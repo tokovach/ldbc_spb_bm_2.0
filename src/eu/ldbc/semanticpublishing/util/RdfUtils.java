@@ -1,19 +1,18 @@
 package eu.ldbc.semanticpublishing.util;
 
+import eu.ldbc.semanticpublishing.util.sesame.CroppingRDFHandler;
+import org.eclipse.rdf4j.rio.RDFFormat;
+import org.eclipse.rdf4j.rio.RDFParseException;
+import org.eclipse.rdf4j.rio.RDFParser;
+import org.eclipse.rdf4j.rio.Rio;
+import org.eclipse.rdf4j.rio.RDFHandlerException;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-
-import org.openrdf.rio.RDFFormat;
-import org.openrdf.rio.RDFHandlerException;
-import org.openrdf.rio.RDFParseException;
-import org.openrdf.rio.RDFParser;
-import org.openrdf.rio.Rio;
-
-import eu.ldbc.semanticpublishing.util.sesame.CroppingRDFHandler;
 
 /**
  * Utility class for configuring the POST http request with different serialization content types.
@@ -26,7 +25,9 @@ public class RdfUtils {
 	public static final String CONTENT_TYPE_NQUADS = "application/n-quads";
 	public static final String CONTENT_TYPE_SESAME_NQUADS = "text/x-nquads";
 	public static final String CONTENT_TYPE_TRIG = "application/x-trig";
+	public static final String CONTENT_TYPE_TRIG_STAR = "application/x-trigstar";
 	public static final String CONTENT_TYPE_TURTLE = "application/x-turtle";
+	public static final String CONTENT_TYPE_TURTLE_STAR = "application/x-turtlestar";
 	
 	private static String[] NAMESPACES = {"cwork:", "<http://www.bbc.co.uk/ontologies/creativework/>",
 										  "bbc:"  , "<http://www.bbc.co.uk/ontologies/bbc/>"};
